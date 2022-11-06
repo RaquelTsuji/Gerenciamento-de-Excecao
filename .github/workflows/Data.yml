@@ -1,0 +1,90 @@
+
+public class Data {
+	private byte dia,mes;
+    private short ano;
+    
+    public static void main(String[] args) throws DataException{
+        Data data = new Data();
+        
+        try{
+        	data.setAno((short)2020);
+        }catch(DataException ex){
+            System.out.println("Erro: ano inserido inválido");
+            System.out.println("Classe: " + ex.getClass());
+            System.out.println(" ");
+        }
+        try{
+        	data.setMes((byte)2);
+        }catch(DataException ex){
+            System.out.println("Erro: mês inserido inválido");
+            System.out.println("Classe: " + ex.getClass());
+            System.out.println(" ");
+        }
+        try{
+        	data.setDia((byte)29);
+        }catch(DiaException ex){
+            System.out.println("Erro: dia inserido inválido");
+            System.out.println("Classe: " + ex.getClass());
+            System.out.println(" ");
+        }
+        finally{
+            System.err.println("Liberando recursos alocados");
+        }
+    }
+    
+    private void setAno(short ano) throws DataException{
+    	//ano não pode ser negativo
+        if (ano<0)
+            throw new DataException();
+        this.ano = ano;
+    }
+    private void setMes(byte mes) throws DataException{
+    	//mês não pode ser menor que 0 e não pode ser meior que 12
+        if (mes<1 || mes>12) 
+            throw new DataException();
+        this.mes = mes;
+    }
+    public void setDia(byte dia) throws DiaException{
+    	//dia não pode ser menor que 1 e cada mês possui uma quantidade máxima de dias variada
+    	//dia deve levar em conta os anos bissextos (que são divisiveis por 4, porém não por 100)
+    	if (ano%4!=0 || ano%100==0) {
+    		if (mes==1 || mes==3 || mes==5 || mes==7 || mes==8 || mes==10 || mes==12) {
+        		if (dia<1 || dia>31)
+                    throw new DiaException();
+                this.dia = dia;
+        	} else if (mes==4 || mes==6 || mes==9 || mes==11) {
+        		if (dia<1 || dia>30)
+                    throw new DiaException();
+                this.dia = dia;
+        	} else if (mes==2) {
+        		if (dia<1 || dia>28)
+                    throw new DiaException();
+                this.dia = dia;
+        	}
+    	} 
+    	
+    	//dias do ano bissexto
+    	else if (ano%4==0 && ano%100!=0) {
+    		if (mes==1 || mes==3 || mes==5 || mes==7 || mes==8 || mes==10 || mes==12) {
+        		if (dia<1 || dia>31)
+                    throw new DiaException();
+                this.dia = dia;
+        	} else if (mes==4 || mes==6 || mes==9 || mes==11) {
+        		if (dia<1 || dia>30)
+                    throw new DiaException();
+                this.dia = dia;
+        	} else if (mes==2) {
+        		if (dia<1 || dia>29)
+                    throw new DiaException();
+                this.dia = dia;
+        	}
+    	}
+    	
+    	//dia necessita do ano e do mês para saber o mínimo e máximo de dias
+    	//porém, levando em consideração todos os meses, o dia não é menor que 1 e não é maior que 31
+    	else
+    		if (ano<0 || mes<1 || mes>12 && dia<1 || dia>31)
+    			throw new DiaException();
+            this.dia = dia;
+    }
+}
